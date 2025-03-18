@@ -15,15 +15,7 @@ const AIFeature = memo(({ feature, index, smoothSpring }) => (
     style={{ borderColor: `${feature.color}30` }}
   >
     <motion.div
-      animate={{
-        scale: [1, 1, 1],
-        rotate: [0, 5, 0]
-      }}
-      transition={{
-        duration: 3,
-        repeat: Infinity,
-        repeatType: "reverse"
-      }}
+   
       className="text-4xl mb-4"
       style={{ textShadow: `0 0 20px ${feature.color}` }}
     >

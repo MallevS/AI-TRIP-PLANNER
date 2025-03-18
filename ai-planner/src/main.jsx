@@ -28,19 +28,19 @@ const router = createBrowserRouter([
   },
   {
     path: '/my-trips',
-    element: <MyTrips/>
+    element: <MyTrips />
   },
   {
     path: '/about',
-    element: <About/>
+    element: <About />
   },
   {
     path: '/contact',
-    element: <Contact/>
+    element: <Contact />
   },
   {
     path: '/pricing',
-    element: <Pricing/>
+    element: <Pricing />
   }
 ])
 

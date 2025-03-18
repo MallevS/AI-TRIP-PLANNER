@@ -152,8 +152,8 @@ const InteractiveMap = memo(({ scaleProgress }) => {
               initial={{ pathLength: 0 }}
               whileInView={{ pathLength: 1 }}
               transition={{ duration: 1.5, delay: i * 0.2 }}
-              d={`M${20 + i * 20}% ${50 - Math.sin(i) * 10}% L50% 50%`}
-              stroke={`hsl(${i * 90}, 100%, 50%)`}
+              d={`M${20 + i * 20} ${50 - Math.sin(i) * 10} L50 50`}
+              stroke={`hsl(${i * 90}, 100, 50)`}
               strokeWidth="1"
               fill="none"
               strokeDasharray="5 5"

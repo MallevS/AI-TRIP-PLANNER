@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, Suspense, lazy } from 'react';
+import React, { useEffect, useRef, Suspense } from 'react';
 import { Button } from '../ui/button';
 import { Link } from 'react-router-dom';
 import { motion, useInView, useAnimation } from 'framer-motion';
 import Particles from '@tsparticles/react';
 import { loadSlim } from "@tsparticles/slim";
-
-const LazyGlobe = lazy(() => import('./Globe'));
-const LazyParticles = lazy(() => import('@tsparticles/react'));
-
+import Globe from './Globe';
 
 function Hero() {
     const ref = useRef(null);
@@ -64,7 +61,7 @@ function Hero() {
             {/* 3D Globe */}
             <div className="absolute left-1/2 top-250 -translate-x-1/2 -translate-y-1/2 w-[3000px] h-[3000px] opacity-100 mix-blend-screen z-0">
                 <Suspense fallback={null}>
-                    <LazyGlobe />
+                    <Globe />
                 </Suspense>
             </div>
 

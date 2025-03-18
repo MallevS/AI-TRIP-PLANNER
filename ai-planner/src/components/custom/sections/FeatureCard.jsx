@@ -37,7 +37,7 @@ const FeatureCard = memo(({ feature, index }) => {
         >
           <motion.div
             variants={floatingVariants}
-            animate="float"
+       
             style={{
               fontSize: '4rem',
               marginBottom: '1.5rem',

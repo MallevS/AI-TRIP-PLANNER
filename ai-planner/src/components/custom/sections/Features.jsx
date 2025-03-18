@@ -2,13 +2,12 @@ import React, { useMemo, lazy, Suspense } from 'react'
 import { Button } from '../../ui/button';
 const smoothSpring = { type: "spring", damping: 15, stiffness: 120 };
 import { motion, useScroll, useTransform } from 'framer-motion';
-
-const FeatureCard = lazy(() => import('./FeatureCard'));
-const TestimonialCard = lazy(() => import('./TestimonialCard'));
-const AIFeatureGrid = lazy(() => import('./AIFeatureGrid'));
-const AITimelineSection = lazy(() => import('./AITimelineSection'));
-const InteractiveMap = lazy(() => import('./InteractiveMap'));
-const InteractiveDemo = lazy(() => import('./InteractiveDemo'));
+import FeatureCard from './FeatureCard';
+import TestimonialCard from './TestimonialCard';
+import AIFeatureGrid from './AIFeatureGrid';
+import AITimelineSection from './AITimelineSection';
+import InteractiveMap from './InteractiveMap';
+import InteractiveDemo from './InteractiveDemo';
 
 function Features() {
     const { scrollYProgress } = useScroll({
