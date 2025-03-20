@@ -21,7 +21,7 @@ class ErrorBoundary extends React.Component {
 }
 
 function EarthSphere() {
-    const earthTexture = useTexture('/earth.jpg');
+    const earthTexture = useTexture('/AI-TRIP-PLANNER/earth.jpg');
 
     React.useEffect(() => {
         return () => {

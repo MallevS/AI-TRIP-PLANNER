@@ -54,7 +54,7 @@ function UserTripCardItem({ trip }) {
             setPhotoUrl(imageUrl);
         } catch (error) {
             console.error('Error fetching photo:', error);
-            setPhotoUrl('/placeholder.jpg');
+            setPhotoUrl('/AI-TRIP-PLANNER/placeholder.jpg');
         } finally {
             setIsLoading(false);
         }

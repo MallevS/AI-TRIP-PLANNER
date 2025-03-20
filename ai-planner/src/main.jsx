@@ -12,6 +12,7 @@ import MyTrips from './my-trips';
 import About from './about/Index';
 import Contact from './contact/Index';
 import Pricing from './pricing/Index';
+import Destinations from './destinations/Index';
 
 const router = createBrowserRouter([
   {
@@ -41,8 +42,12 @@ const router = createBrowserRouter([
   {
     path: '/pricing',
     element: <Pricing />
+  },
+  {
+    path: '/destinations',
+    element: <Destinations/>
   }
-])
+], {basename: "/AI-TRIP-PLANNER"});
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

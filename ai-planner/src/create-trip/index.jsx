@@ -1033,6 +1033,51 @@ function CreateTrip() {
     }
   };
 
+  // const OnGenerateTrip = async () => {
+  //   const user = localStorage.getItem('user');
+
+  //   if (!user) {
+  //     setOpenDialog(true);
+  //     return;
+  //   }
+
+  //   if (formData?.noOfDays > 5 && !formData?.location || !formData?.budget || !formData?.traveler) {
+  //     toast("Please fill all required fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     setLoading(true);
+  //     const FINAL_PROMPT = AI_PROMPT
+  //       .replace('{location}', formData?.location?.label)
+  //       .replace('{totalDays}', formData?.noOfDays)
+  //       .replace('{traveler}', formData?.traveler)
+  //       .replace('{budget}', formData?.budget)
+  //       .replace('{totalDays}', formData?.noOfDays);
+
+  //     const result = await chatSession.sendMessage(FINAL_PROMPT);
+  //     const responseText = await result?.response?.text();
+
+  //     try {
+  //       const start = responseText.indexOf('{');
+  //       const end = responseText.lastIndexOf('}') + 1;
+  //       const jsonStr = responseText.slice(start, end);
+
+  //       const parsedJson = JSON.parse(jsonStr);
+
+  //       SaveAiTrip(JSON.stringify(parsedJson));
+  //     } catch (jsonError) {
+  //       console.error('JSON parsing error:', jsonError);
+  //       console.log('Raw response:', responseText);
+  //       toast.error('Invalid response format from AI. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error generating trip:', error);
+  //     toast.error('Failed to generate trip. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const OnGenerateTrip = async () => {
     const user = localStorage.getItem('user');
 
@@ -1041,7 +1086,7 @@ function CreateTrip() {
       return;
     }
 
-    if (formData?.noOfDays > 5 && !formData?.location || !formData?.budget || !formData?.traveler) {
+    if (formData?.noOfDays > 5 && (!formData?.location || !formData?.budget || !formData?.traveler)) {
       toast("Please fill all required fields");
       return;
     }
@@ -1052,19 +1097,24 @@ function CreateTrip() {
         .replace('{location}', formData?.location?.label)
         .replace('{totalDays}', formData?.noOfDays)
         .replace('{traveler}', formData?.traveler)
-        .replace('{budget}', formData?.budget)
-        .replace('{totalDays}', formData?.noOfDays);
+        .replace('{budget}', formData?.budget);
 
       const result = await chatSession.sendMessage(FINAL_PROMPT);
       const responseText = await result?.response?.text();
 
+      console.log("AI Raw Response:", responseText);
+
+      const jsonMatch = responseText.match(/\{.*\}/s);
+      if (!jsonMatch) {
+        console.error("No JSON found in response:", responseText);
+        toast.error("Invalid AI response. Please try again.");
+        return;
+      }
+
+      const jsonStr = jsonMatch[0];
+
       try {
-        const start = responseText.indexOf('{');
-        const end = responseText.lastIndexOf('}') + 1;
-        const jsonStr = responseText.slice(start, end);
-
         const parsedJson = JSON.parse(jsonStr);
-
         SaveAiTrip(JSON.stringify(parsedJson));
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError);
@@ -1077,7 +1127,7 @@ function CreateTrip() {
     } finally {
       setLoading(false);
     }
-  };
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a1b] to-[#1a1a3a] text-white">

@@ -131,7 +131,7 @@ function InfoSection({ trip }) {
       setPhotoUrl(imageUrl);
     } catch (error) {
       console.error('Error fetching photo:', error);
-      setPhotoUrl('/placeholder.jpg');
+      setPhotoUrl('/AI-TRIP-PLANNER/placeholder.jpg');
     }
   }, [trip]);
 
@@ -173,7 +173,7 @@ function InfoSection({ trip }) {
           transition={{ duration: 0.5 }}
           onLoad={() => setImageLoaded(true)}
           onError={(e) => {
-            e.target.src = '/placeholder.jpg';
+            e.target.src = '/AI-TRIP-PLANNER/placeholder.jpg';
             console.error('Image failed to load');
           }}
         />

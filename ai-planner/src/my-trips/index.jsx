@@ -1,5 +1,5 @@
 import { db } from '@/service/firebaseConfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import React, { useEffect, useState, } from 'react'
 import { Link, useNavigation } from 'react-router-dom';
 import UserTripCardItem from './components/UserTripCardItem';
@@ -23,7 +23,9 @@ function MyTrips() {
         }
 
         try {
-            const q = query(collection(db, "AITrips"), where('userEmail', '==', user?.email));
+            const q = query(collection(db, "AITrips"), where('userEmail', '==', user?.email),
+                orderBy('createdAt', 'desc')
+            );
             const querySnapshot = await getDocs(q);
             const trips = [];
 

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import axios from 'axios';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 function Header() {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -69,11 +70,11 @@ function Header() {
                     className="p-2 pl-4"
                     whileHover={{ scale: 1.05 }}
                 >
-                    <img src="/logo.svg" alt="" className="h-8 w-auto" />
+                    <img src="/AI-TRIP-PLANNER/logo.svg" alt="" className="h-8 w-auto" />
                 </motion.a>
                 <div className="hidden md:flex items-center gap-6">
                     <motion.a
-                        href="/destinations"
+                        href="/AI-TRIP-PLANNER/destinations"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -87,7 +88,7 @@ function Header() {
                     </motion.a>
 
                     <motion.a
-                        href="/about"
+                        href="/AI-TRIP-PLANNER/about"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -101,7 +102,7 @@ function Header() {
                     </motion.a>
 
                     <motion.a
-                        href="/contact"
+                        href="/AI-TRIP-PLANNER/contact"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -115,7 +116,7 @@ function Header() {
                     </motion.a>
 
                     <motion.a
-                        href="/pricing"
+                        href="/AI-TRIP-PLANNER/pricing"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -139,14 +140,21 @@ function Header() {
                             >
                                 <Button
                                     variant="outline"
-                                    href="/create-trip"
+                                    href="/AI-TRIP-PLANNER/create-trip"
                                     className="bg-white/5 border-white/10 rounded-full px-4 hover:bg-white/10 hover:border-[#00f3ff] transition-all text-white"
                                 >
                                     + Trip
                                 </Button>
-                                <Button
+                                {/* <Button
                                     variant="outline"
                                     href='/my-trips'
+                                    className="bg-white/5 border-white/10 rounded-full px-4 hover:bg-white/10 hover:border-[#00f3ff] transition-all text-white"
+                                >
+                                    My Trips
+                                </Button> */}
+                                <Button
+                                    variant="outline"
+                                    href='/AI-TRIP-PLANNER/my-trips'
                                     className="bg-white/5 border-white/10 rounded-full px-4 hover:bg-white/10 hover:border-[#00f3ff] transition-all text-white"
                                 >
                                     My Trips
@@ -206,7 +214,7 @@ function Header() {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="space-y-6"
                             >
-                                <img src="/logo.svg" alt="" className="h-8 mx-auto" />
+                                <img src="/AI-TRIP-PLANNER/logo.svg" alt="" className="h-8 mx-auto" />
                                 <div className="space-y-2 text-center">
                                     <h3 className="text-xl font-bold text-white">Welcome Back</h3>
                                     <p className="text-gray-400 text-sm">Continue with Google to start planning</p>

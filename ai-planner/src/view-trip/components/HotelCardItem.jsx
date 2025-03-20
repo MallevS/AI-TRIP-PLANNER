@@ -55,7 +55,7 @@ function HotelCardItem({ hotel }) {
                     animate={{ opacity: 1 }}
                 />
                 <motion.img
-                    src={photoUrl || '/hotel-placeholder.jpg'}
+                    src={photoUrl || '/AI-TRIP-PLANNER/placeholder.jpg'}
                     alt={hotel.name}
                     className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
                     initial={{ scale: 1.2 }}

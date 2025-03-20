@@ -16,6 +16,7 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: "/AI-TRIP-PLANNER",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

@@ -135,7 +135,7 @@ const InteractiveMap = memo(({ scaleProgress }) => {
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute inset-0 opacity-30"
           style={{
-            background: `url('/world-map.svg') center/contain no-repeat`
+            background: `url('/AI-TRIP-PLANNER/world-map.svg') center/contain no-repeat`
           }}
         />
 

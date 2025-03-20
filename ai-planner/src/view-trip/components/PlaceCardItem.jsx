@@ -35,7 +35,7 @@ function PlaceItem({ placeItem }) {
             setPhotoUrl(imageUrl);
         } catch (error) {
             console.error('Error fetching photo:', error);
-            setPhotoUrl('/placeholder.jpg');
+            setPhotoUrl('/AI-TRIP-PLANNER/placeholder.jpg');
         }
     };
 
@@ -59,13 +59,13 @@ function PlaceItem({ placeItem }) {
                         animate={{ opacity: 1 }}
                     />
                     <motion.img
-                        src={photoUrl || '/placeholder.jpg'}
+                        src={photoUrl || '/AI-TRIP-PLANNER/placeholder.jpg'}
                         alt={placeItem.placeName}
                         className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
                         initial={{ scale: 1.2 }}
                         animate={{ scale: 1 }}
                         onError={(e) => {
-                            e.target.src = '/placeholder.jpg';
+                            e.target.src = '/AI-TRIP-PLANNER/placeholder.jpg';
                         }}
                     />
                 </div>

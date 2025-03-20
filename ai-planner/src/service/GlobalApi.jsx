@@ -37,7 +37,7 @@ export const GetPlaceDetails = async (data) => {
 };
 
 export const getPhotoUrl = (photoName) => {
-    if (!photoName) return '/placeholder.jpg';
+    if (!photoName) return '/AI-TRIP-PLANNER/placeholder.jpg';
     const url = `https://places.googleapis.com/v1/${photoName}/media`;
     return `${url}?key=${API_KEY}&maxHeightPx=800&maxWidthPx=800`;
 };
@@ -71,9 +71,9 @@ export const fetchImageFromCustomSearch = async (query) => {
       });
   
       const items = response.data?.items || [];
-      return items.length ? items[0].link : "/placeholder.jpg";
+      return items.length ? items[0].link : "/AI-TRIP-PLANNER/placeholder.jpg";
     } catch (error) {
       console.error("Image fetch error:", error);
-      return "/placeholder.jpg";
+      return "/AI-TRIP-PLANNER/placeholder.jpg";
     }
   };
