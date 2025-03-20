@@ -5,9 +5,10 @@ import { Link, useNavigation } from 'react-router-dom';
 import UserTripCardItem from './components/UserTripCardItem';
 import { motion } from 'framer-motion';
 import { PlusCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function MyTrips() {
-    const navigation = useNavigation();
+    const navigation = useNavigate();
     const [userTrips, setUserTrips] = useState([]);
 
     useEffect(() => {
@@ -18,7 +19,7 @@ function MyTrips() {
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (!user) {
-            navigation('/');
+            navigate('/');
             return;
         }
 
