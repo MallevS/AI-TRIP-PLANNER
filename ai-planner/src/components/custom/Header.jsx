@@ -66,7 +66,7 @@ function Header() {
             >
                 {/* Logo */}
                 <motion.a
-                    href="/"
+                    href="#/"
                     className="p-2 pl-4"
                     whileHover={{ scale: 1.05 }}
                 >
@@ -74,7 +74,7 @@ function Header() {
                 </motion.a>
                 <div className="hidden md:flex items-center gap-6">
                     <motion.a
-                        href="/AI-TRIP-PLANNER/destinations"
+                        href="#/destinations"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -88,7 +88,7 @@ function Header() {
                     </motion.a>
 
                     <motion.a
-                        href="/AI-TRIP-PLANNER/about"
+                        href="#/about"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -102,7 +102,7 @@ function Header() {
                     </motion.a>
 
                     <motion.a
-                        href="/AI-TRIP-PLANNER/contact"
+                        href="#/contact"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -116,7 +116,7 @@ function Header() {
                     </motion.a>
 
                     <motion.a
-                        href="/AI-TRIP-PLANNER/pricing"
+                        href="#/pricing"
                         className="relative group px-4 py-2"
                         whileHover={{ y: -2 }}
                     >
@@ -140,7 +140,7 @@ function Header() {
                             >
                                 <Button
                                     variant="outline"
-                                    href="/AI-TRIP-PLANNER/create-trip"
+                                    href="#/create-trip"
                                     className="bg-white/5 border-white/10 rounded-full px-4 hover:bg-white/10 hover:border-[#00f3ff] transition-all text-white"
                                 >
                                     + Trip
@@ -154,7 +154,7 @@ function Header() {
                                 </Button> */}
                                 <Button
                                     variant="outline"
-                                    href='/AI-TRIP-PLANNER/my-trips'
+                                    href='#/my-trips'
                                     className="bg-white/5 border-white/10 rounded-full px-4 hover:bg-white/10 hover:border-[#00f3ff] transition-all text-white"
                                 >
                                     My Trips
