@@ -1127,7 +1127,7 @@ function CreateTrip() {
     } finally {
       setLoading(false);
     }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a1b] to-[#1a1a3a] text-white">
@@ -1281,7 +1281,7 @@ function CreateTrip() {
         </AnimatePresence>
 
         {/* Login Dialog */}
-        <Dialog open={openDialog}>
+        {/* <Dialog open={openDialog}>
           <DialogContent className="glassmorphism">
             <VisuallyHidden>
               <DialogTitle>Trip Details</DialogTitle>
@@ -1298,12 +1298,38 @@ function CreateTrip() {
                   </div>
                   <Button
                     onClick={login}
-                    className="w-full glassmorphism-button-primary flex items-center justify-center gap-3"
+                    className="w-full text-white glassmorphism-button-primary flex items-center justify-center gap-3"
                   >
                     <FcGoogle className="text-2xl" />
                     Continue with Google
                   </Button>
                 </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog> */}
+        <Dialog open={openDialog}>
+          <DialogContent className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl">
+            <DialogHeader>
+              <DialogDescription>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  <img src="/AI-TRIP-PLANNER/logo.svg" alt="" className="h-8 mx-auto" />
+                  <div className="space-y-2 text-center">
+                    <h3 className="text-xl font-bold text-white">Trip Details</h3>
+                    <p className="text-gray-400 text-sm"> Please sign in with Google to generate your personalized trip</p>
+                  </div>
+                  <Button
+                    onClick={login}
+                    className="text-white w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00f3ff] rounded-full transition-all duration-300"
+                  >
+                    <FcGoogle className="mr-2 h-5 w-5" />
+                    Sign in with Google
+                  </Button>
+                </motion.div>
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

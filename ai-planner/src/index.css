@@ -141,3 +141,7 @@ input[type="range"]::-moz-range-thumb {
 .smallPaddingTop {
     padding-top: 100px;
 }
+
+h1, h2, span , p{
+    user-select: none;
+}
