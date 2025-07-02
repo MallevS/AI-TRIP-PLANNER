@@ -19,7 +19,7 @@ function FitBounds({ positions }) {
 
   useEffect(() => {
     if (positions.length === 1) {
-      map.setView(positions[0], 12); 
+      map.setView(positions[0], 12);
     } else if (positions.length > 1) {
       map.fitBounds(positions);
     }
@@ -32,6 +32,12 @@ const ItineraryMap = ({ destination = [] }) => {
   const safeItinerary = Array.isArray(destination) ? destination : [];
   const center = safeItinerary?.[0]?.coordinates || [51.505, -0.09];
   const polyline = safeItinerary.map((day) => day.coordinates);
+
+  const resolveImagePath = (imgPath) => {
+    if (!imgPath) return null;
+    if (imgPath.startsWith('http')) return imgPath;
+    return `${process.env.PUBLIC_URL || ''}${imgPath}`;
+  };
 
   return (
     <MapContainer
@@ -46,10 +52,10 @@ const ItineraryMap = ({ destination = [] }) => {
         boxShadow: "0 8px 32px 0 rgba(14,165,233,0.25), 0 1.5px 6px 0 rgba(0,0,0,0.10)"
       }}
     >
-   <TileLayer
-  url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-  attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
-/>
+      <TileLayer
+        url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
+      />
       <FitBounds positions={polyline} />
       {safeItinerary.map((day, i) => (
         <Marker
@@ -64,7 +70,7 @@ const ItineraryMap = ({ destination = [] }) => {
         >
           <Popup className="glass-popup">
             <strong>Day {i + 1}: {day.title}</strong><br />
-            {day.image && <img src={day.image} alt="" style={{ width: '100px', borderRadius: '8px', margin: '8px 0' }} />}
+            {day.image && <img src={resolveImagePath(day.image)}  alt={`Day ${i+1}`}  style={{ width: '100px', borderRadius: '8px', margin: '8px 0' }} />}
             <div>{day.description}</div>
             {day.weather && (
               <div style={{ marginTop: 8 }}>
