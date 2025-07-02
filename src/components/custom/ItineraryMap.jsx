@@ -53,7 +53,7 @@ const ItineraryMap = ({ destination = [] }) => {
       }}
     >
       <TileLayer
-        url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+        url={`https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=464b22d1-6bf9-46bd-9e6f-0c87a85aa574`}
         attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
       />
       <FitBounds positions={polyline} />
