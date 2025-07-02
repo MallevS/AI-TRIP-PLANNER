@@ -41,7 +41,7 @@ function PlaceItem({ placeItem }) {
 
     return (
         <Link 
-            to={'https://www.google.com/maps/search/?api=1&query=' + placeItem?.placeName} 
+            to={'https://www.google.com/maps/search/?api=1&query='+ placeItem?.placeName} 
             target='_blank'
             className='block'
             onMouseEnter={() => setIsHovered(true)}

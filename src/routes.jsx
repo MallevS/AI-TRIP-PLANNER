@@ -1,4 +1,3 @@
-// routes.js
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import CreateTrip from './create-trip';

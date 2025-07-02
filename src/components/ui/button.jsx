@@ -42,7 +42,6 @@ function Button({
   asChild = false,
   ...props
 }) {
-  // const Comp = asChild ? Slot : "button"
   const Comp = href ? "a" : asChild ? Slot : "button"
 
 

@@ -17,7 +17,7 @@ function MyTrips() {
 
     const GetUserTrips = async () => {
         const user = JSON.parse(localStorage.getItem('user'));
-
+        
         if (!user) {
             navigate('/');
             return;

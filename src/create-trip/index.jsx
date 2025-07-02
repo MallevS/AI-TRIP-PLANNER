@@ -1,246 +1,6 @@
-// import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
-// import { AI_PROMPT, SelectBudgetOptions, SelectTravelList } from '@/constants/options';
-// import { chatSession } from '@/service/AIModal';
-// import React, { useEffect, useState } from 'react'
-// import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
-// import { toast } from 'sonner';
-// import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog"
-// import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-// import { FcGoogle } from 'react-icons/fc';
-// import { useGoogleLogin } from '@react-oauth/google';
-// import axios from 'axios';
-// import { doc, setDoc } from 'firebase/firestore';
-// import { db } from '@/service/firebaseConfig';
-// import { useNavigate } from 'react-router-dom';
-
-// function CreateTrip() {
-//   const [place, setPlace] = useState();
-//   const [formData, setFormData] = useState([]);
-//   const [openDialog, setOpenDialog] = useState(false);
-//   const [loading, setLoading] = useState(false);
-
-//   const navigate = useNavigate();
-//   const handleInputChange = (name, value) => {
-//     if (name == 'noOfDays' && value > 5) {
-//       console.log("Please enter Trip Days less than 5");
-//       return;
-//     }
-
-//     setFormData({
-//       ...formData,
-//       [name]: value
-//     })
-//   }
-
-//   useEffect(() => {
-//     console.log(formData);
-//   }, [formData])
-
-//   const login = useGoogleLogin({
-//     onSuccess: (codeResp) => GetUserProfile(codeResp),
-//     onError: (error) => console.log(error),
-//   });
-
-//   const OnGenerateTrip = async () => {
-//     const user = localStorage.getItem('user');
-
-//     if (!user) {
-//       setOpenDialog(true);
-//       return;
-//     }
-
-//     if (formData?.noOfDays > 5 && !formData?.location || !formData?.budget || !formData?.traveler) {
-//       toast("Event has been created.");
-//       return;
-//     }
-
-//     setLoading(true);
-//     const FINAL_PROMPT = AI_PROMPT
-//       .replace('{location}', formData?.location?.label)
-//       .replace('{totalDays}', formData?.noOfDays)
-//       .replace('{traveler}', formData?.traveler)
-//       .replace('{budget}', formData?.budget)
-//       .replace('{totalDays}', formData?.noOfDays);
-
-//     const result = await chatSession.sendMessage(FINAL_PROMPT);
-
-//     console.log("---", result?.response?.text());
-//     setLoading(false);
-//     SaveAiTrip(result?.response?.text());
-//   }
-
-//   const GetUserProfile = (tokenInfo) => {
-//     axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?acess_token=${tokenInfo?.access_token}`, {
-//       headers: {
-//         Authorization: `Bearer ${tokenInfo?.access_token}`,
-//         Accept: 'Application/json',
-//       }
-//     }).then((resp) => {
-//       console.log(resp);
-//       localStorage.setItem('user', JSON.stringify(resp.data));
-//       setOpenDialog(false);
-//       OnGenerateTrip();
-//     })
-//   }
-
-//   const SaveAiTrip = async (TripData) => {
-//     let docId;
-//     try {
-//       setLoading(true);
-//       const user = JSON.parse(localStorage.getItem('user'));
-
-//       if (!user?.email) {
-//         toast.error('Please sign in first');
-//         return;
-//       }
-
-//       if (!formData || !TripData) {
-//         toast.error('Missing trip data');
-//         return;
-//       }
-
-//       docId = Date.now().toString();
-//       const tripData = {
-//         userSelection: formData,
-//         tripData: JSON.parse(TripData),
-//         userEmail: user.email,
-//         id: docId,
-//         createdAt: new Date().toISOString(),
-//         userId: user.id || user.email
-//       };
-
-//       try {
-//         await setDoc(doc(db, "AITrips", docId), tripData);
-//         toast.success('Trip saved successfully!');
-//       } catch (firestoreError) {
-//         console.error('Firestore error:', firestoreError);
-//         if (firestoreError.code === 'permission-denied') {
-//           toast.error('Permission denied. Please check your authentication.');
-//         } else {
-//           toast.error('Failed to save to database');
-//         }
-//         return;
-//       }
-//     } catch (error) {
-//       console.error('Error saving trip:', error);
-//       toast.error(error.message || 'Failed to save trip');
-//       return;
-//     } finally {
-//       setLoading(false);
-//       if (docId) {
-//         navigate('/view-trip/' + docId);
-//       }
-//     }
-//   };
-//   return (
-//     <div className='sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10'>
-//       <h2 className='font-bold text-3xl'>Tell us your travel preferences 🏕️🌴</h2>
-//       <p className='mt-3 text-gray-500 text-xl'>Just provide some basic information, and our trip planner will generate a customized itinerary based on your preferences.</p>
-//       <div className='mt-20 flex flex-col gap-10'>
-//         <div>
-//           <h2 className='text-xl my-3 font-medium'>What is destination of choice?</h2>
-//           <GooglePlacesAutocomplete
-//             apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
-//             selectProps={{
-//               place,
-//               onChange: (v) => { setPlace(v); handleInputChange('location', v) }
-//             }}
-//           />
-//         </div>
-//         <div>
-//           <h2 className='text-xl my-3 font-medium'>How many days are you planning your trip?</h2>
-//           <Input placeholder={'Ex.3'} type="number"
-//             onChange={(e) => handleInputChange('noOfDays', e.target.value)}
-//             className={'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'} />
-//         </div>
-//         <div>
-//           <h2 className='text-xl my-3 font-medium'>What is Your Budget?</h2>
-//           <div className='grid grid-cols-3 gap-5 mt-5'>
-//             {SelectBudgetOptions.map((item, index) => {
-//               return (
-//                 <div key={index}
-//                   onClick={() => handleInputChange('budget', item.title)}
-//                   className={`p-4 border rounded-lg cursor-pointer hover:shadow-lg ${formData?.budget === item.title
-//                     ? 'shadow-lg border-black'
-//                     : 'border-gray-200'
-//                     }`} >
-//                   <h2 className='text-4xl'>{item.icon}</h2>
-//                   <h2 className='font-bold text-lg'>{item.title}</h2>
-//                   <h2 className='text-sm text-gray-500'>{item.desc}</h2>
-//                 </div>
-//               );
-//             })}
-//           </div>
-//         </div>
-
-//         <div>
-//           <h2 className='text-xl my-3 font-medium'>Who do you plan on traveling with on your next adventure?</h2>
-//           <div className='grid grid-cols-3 gap-5 mt-5'>
-//             {SelectTravelList.map((item, index) => {
-//               return (
-//                 <div key={index}
-//                   onClick={() => handleInputChange('traveler', item.people)}
-//                   className={`p-4 border rounded-lg cursor-pointer hover:shadow-lg ${formData?.traveler === item.people
-//                     ? 'shadow-lg border-black'
-//                     : 'border-gray-200'
-//                     }`}>
-//                   <h2 className='text-4xl'>{item.icon}</h2>
-//                   <h2 className='font-bold text-lg'>{item.title}</h2>
-//                   <h2 className='text-sm text-gray-500'>{item.desc}</h2>
-//                 </div>
-//               );
-//             })}
-//           </div>
-//         </div>
-
-//         <div className="my-10 justify-end flex">
-//           <Button onClick={OnGenerateTrip}
-//             disabled={loading}
-//             className={'bg-black text-white hover:opacity-80 transition-opacity cursor-pointer h-10 px-4 py-2'}>
-//             {loading ?
-//               <AiOutlineLoading3Quarters style={{ width: '25px', height: '25px' }} className="animate-spin h-7 w-7" /> : 'Generate Trip'}
-//           </Button>
-//         </div>
-
-//         <Dialog open={openDialog}>
-//           <DialogContent className="bg-white">
-//             <VisuallyHidden>
-//               <DialogTitle>Trip Details</DialogTitle>
-//             </VisuallyHidden>
-//             <DialogHeader>
-//               <DialogDescription>
-//                 <img src="/logo.svg" alt="" />
-//                 <span className="flex flex-col">
-//                   <span className='font-bold text-lg mt-7'>Sign In With Google</span>
-//                   <span>Sign in to the App with Google authentication securely</span>
-//                 </span>
-//                 <Button onClick={login} variant={'outline'} className="w-full mt-5 flex gap-4 items-center bg-black text-white px-5 h-12 hover:opacity-80 transition-opacity cursor-pointer">
-//                   <FcGoogle style={{ width: '30px', height: '30px' }} className="h-16 w-16" />
-//                   Sign In With Google
-//                 </Button>
-//               </DialogDescription>
-//             </DialogHeader>
-//           </DialogContent>
-//         </Dialog>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default CreateTrip
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { AI_PROMPT, SelectBudgetOptions, SelectTravelList } from '@/constants/options';
+import { AI_PROMPT, SelectBudgetOptions, SelectTravelList, SelectTravelStyleOptions, SelectActivitiesOptions, SelectDietaryOptions, SelectAccessibilityOptions } from '@/constants/options';
 import { chatSession } from '@/service/AIModal';
 import React, { useEffect, useState, SVGProps } from 'react';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
@@ -257,6 +17,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { IoMdAirplane } from 'react-icons/io';
 import { BsCalendarDate, BsPeople, BsCurrencyDollar } from 'react-icons/bs';
+import { FaClipboardList } from 'react-icons/fa';
+import { format } from 'date-fns';
+import { GiCompass, GiMountainCave, GiFruitBowl } from "react-icons/gi";
+import { FaWheelchair, FaCarrot } from "react-icons/fa";
+import Chatbot from '@/components/custom/Chatbot';
+import ItineraryMap from '../components/custom/ItineraryMap';
+import ReviewStep from '../components/ReviewStep';
 
 const destinationVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -309,6 +76,13 @@ const getFormattedDate = (addDays) => {
     day: 'numeric'
   });
 };
+
+const PreferenceItem = ({ label, value }) => (
+  <div className="flex justify-between py-2 border-b border-white/10">
+    <span className="text-cyan-300">{label}:</span>
+    <span className="font-medium">{value || 'Not specified'}</span>
+  </div>
+);
 
 function CreateTrip() {
   const [place, setPlace] = useState();
@@ -385,8 +159,6 @@ function CreateTrip() {
                 components: {
                   DropdownIndicator: () => (
                     <motion.div
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                       className="text-cyan-500 px-3"
                     >
                       <IoMdAirplane size={24} />
@@ -423,14 +195,6 @@ function CreateTrip() {
           {/* Animated Container */}
           <motion.div
             className="relative rounded-2xl overflow-hidden bg-white/5  p-8"
-          // animate={{
-          //   boxShadow: [
-          //     "0 0 20px rgba(6, 182, 212, 0.1)",
-          //     "0 0 40px rgba(6, 182, 212, 0.2)",
-          //     "0 0 20px rgba(6, 182, 212, 0.1)"
-          //   ]
-          // }}
-          // transition={{ duration: 2, repeat: Infinity }}
           >
             {/* Days Display */}
             <motion.div
@@ -614,105 +378,48 @@ function CreateTrip() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          <motion.div
-            className="grid grid-cols-3 gap-6"
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-            initial="hidden"
-            animate="show"
-          >
+          <div className="grid grid-cols-3 gap-6">
             {SelectBudgetOptions.map((item, index) => (
               <motion.div
                 key={index}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 }
-                }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleInputChange('budget', item.title)}
+                className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
+              transition-all duration-300 border-2
+              ${formData?.budget === item.title
+                    ? 'border-cyan-500 bg-cyan-500/10'
+                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  }`}
               >
-                <motion.div
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleInputChange('budget', item.title)}
-                  className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
-                    transition-all duration-300 border-2
-                    ${formData?.budget === item.title
-                      ? 'border-cyan-500 bg-cyan-500/10'
-                      : 'border-white/10 bg-white/5 hover:bg-white/10'
-                    }`}
-                >
-                  {/* Background gradient effect */}
-                  <motion.div
-                    className="absolute inset-0 opacity-30"
-                    animate={{
-                      background: [
-                        "radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.4) 0%, transparent 50%)",
-                        "radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.4) 0%, transparent 50%)",
-                        "radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.4) 0%, transparent 50%)"
-                      ]
-                    }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  />
-
-                  <div className="relative p-6 space-y-4">
-                    {/* Icon with effects */}
-                    <motion.div
-                      animate={{
-                        rotateY: formData?.budget === item.title ? [0, 360] : 0,
-                        scale: formData?.budget === item.title ? [1, 1.2, 1] : 1
-                      }}
-                      transition={{ duration: 0.5 }}
-                      className="text-5xl mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 
-                        p-4 rounded-xl inline-block"
-                    >
-                      {item.icon}
-                    </motion.div>
-
-                    {/* Title with gradient */}
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 
-                      bg-clip-text text-transparent"
-                    >
-                      {item.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                      {item.desc}
-                    </p>
-
-                    {/* Selected indicator */}
-                    {formData?.budget === item.title && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-4 right-4"
-                      >
-                        <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 text-center">
-                          <motion.div
-
-
-                          >
-                            ✓
-                          </motion.div>
-                        </div>
-                      </motion.div>
-                    )}
+                <div className="relative p-6 space-y-4">
+                  <div className="text-5xl "
+                  >
+                    {item.icon}
                   </div>
-                </motion.div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 
+                bg-clip-text text-transparent"
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    {item.desc}
+                  </p>
+                  {formData?.budget === item.title && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute top-4 right-4"
+                    >
+                      <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                        ✓
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
               </motion.div>
             ))}
-          </motion.div>
-
-          {/* Budget selection message */}
+          </div>
           <AnimatePresence>
             {formData?.budget && (
               <motion.div
@@ -743,128 +450,47 @@ function CreateTrip() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          <motion.div
-            className="grid grid-cols-3 gap-6"
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-            initial="hidden"
-            animate="show"
-          >
+          <div className="grid grid-cols-4 gap-6">
             {SelectTravelList.map((item, index) => (
               <motion.div
                 key={index}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 }
-                }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleInputChange('traveler', item.people)}
+                className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
+              transition-all duration-300 border-2
+              ${formData?.traveler === item.people
+                    ? 'border-cyan-500 bg-cyan-500/10'
+                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  }`}
               >
-                <motion.div
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleInputChange('traveler', item.people)}
-                  className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
-                    transition-all duration-300 border-2
-                    ${formData?.traveler === item.people
-                      ? 'border-cyan-500 bg-cyan-500/10'
-                      : 'border-white/10 bg-white/5 hover:bg-white/10'
-                    }`}
-                >
-                  {/* Animated gradient background */}
-                  <motion.div
-                    className="absolute inset-0 opacity-30"
-                    animate={{
-                      background: [
-                        "radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.4) 0%, transparent 50%)",
-                        "radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.4) 0%, transparent 50%)",
-                        "radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.4) 0%, transparent 50%)"
-                      ]
-                    }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  />
-
-                  <div className="relative p-6 space-y-4">
-                    {/* Icon with effects */}
-                    <motion.div
-                      animate={{
-                        rotateY: formData?.traveler === item.people ? [0, 360] : 0,
-                        scale: formData?.traveler === item.people ? [1, 1.2, 1] : 1
-                      }}
-                      transition={{ duration: 0.5 }}
-                      className="text-5xl mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 
-                        p-4 rounded-xl inline-block"
-                    >
-                      {item.icon}
-                    </motion.div>
-
-                    {/* Title with gradient */}
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 
-                      bg-clip-text text-transparent"
-                    >
-                      {item.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                      {item.desc}
-                    </p>
-
-                    {/* Selected indicator */}
-                    {formData?.traveler === item.people && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-4 right-4"
-                      >
-                        <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
-                          <motion.div
-
-                          >
-                            ✓
-                          </motion.div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Decorative particles */}
-                    {formData?.traveler === item.people && (
-                      <motion.div className="absolute inset-0 pointer-events-none">
-                        {[...Array(3)].map((_, i) => (
-                          <motion.div
-                            key={i}
-                            className="absolute w-2 h-2 bg-cyan-500 rounded-full"
-                            animate={{
-                              x: [0, Math.random() * 100 - 50],
-                              y: [0, Math.random() * -100],
-                              scale: [1, 0],
-                              opacity: [1, 0]
-                            }}
-                            transition={{
-                              duration: 1,
-                              repeat: Infinity,
-                              delay: i * 0.2,
-                              ease: "easeOut"
-                            }}
-                          />
-                        ))}
-                      </motion.div>
-                    )}
+                <div className="relative p-6 space-y-4">
+                  <div className="text-5xl mb-4">
+                    {item.icon}
                   </div>
-                </motion.div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 
+                bg-clip-text text-transparent"
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    {item.desc}
+                  </p>
+                  {formData?.traveler === item.people && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute top-4 right-4"
+                    >
+                      <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                        ✓
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
               </motion.div>
             ))}
-          </motion.div>
-
-          {/* Selection message */}
+          </div>
           <AnimatePresence>
             {formData?.traveler && (
               <motion.div
@@ -883,6 +509,343 @@ function CreateTrip() {
             )}
           </AnimatePresence>
         </motion.div>
+      )
+    },
+    {
+      id: 'travelStyle',
+      title: "What's your travel style?",
+      icon: <GiCompass className="text-2xl" />,
+      component: (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 gap-6"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              }
+            }}
+            initial="hidden"
+            animate="show"
+          >
+            {SelectTravelStyleOptions.map((item) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleInputChange('travelStyle', item.title)}
+                className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
+              transition-all duration-300 border-2
+              ${formData?.travelStyle === item.title
+                    ? 'border-cyan-500 bg-cyan-500/10'
+                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  }`}
+              >
+                <div className="relative p-6 space-y-4">
+                  <div className="text-5xl mb-4">{item.icon}</div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
+                  {formData?.travelStyle === item.title && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute top-4 right-4"
+                    >
+                      <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                        ✓
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+          <AnimatePresence>
+            {formData?.travelStyle && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-center text-cyan-400 font-medium"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Perfect! You prefer a {formData.travelStyle.toLowerCase()} travel style.
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )
+    }, {
+      id: 'activities',
+      title: "Preferred activities?",
+      icon: <GiMountainCave className="text-2xl" />,
+      component: (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 gap-6"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              }
+            }}
+            initial="hidden"
+            animate="show"
+          >
+            {SelectActivitiesOptions.map((item) => {
+              const selected = formData.activities?.includes(item.title);
+              return (
+                <motion.div
+                  key={item.id}
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const prev = formData.activities || [];
+                    handleInputChange(
+                      'activities',
+                      selected
+                        ? prev.filter((a) => a !== item.title)
+                        : [...prev, item.title]
+                    );
+                  }}
+                  className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
+                transition-all duration-300 border-2
+                ${selected
+                      ? 'border-cyan-500 bg-cyan-500/10'
+                      : 'border-white/10 bg-white/5 hover:bg-white/10'
+                    }`}
+                >
+                  <div className="relative p-6 space-y-4">
+                    <div className="text-5xl mb-4">{item.icon}</div>
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
+                    {selected && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-4 right-4"
+                      >
+                        <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                          ✓
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+          <AnimatePresence>
+            {formData.activities && formData.activities.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-center text-cyan-400 font-medium"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Activities selected: {formData.activities.join(', ')}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )
+    },
+    {
+      id: 'dietary',
+      title: "Any dietary preferences?",
+      icon: <GiFruitBowl className="text-2xl" />,
+      component: (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 gap-6"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              }
+            }}
+            initial="hidden"
+            animate="show"
+          >
+            {SelectDietaryOptions.map((item) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleInputChange('dietary', item.title)}
+                className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
+              transition-all duration-300 border-2
+              ${formData?.dietary === item.title
+                    ? 'border-cyan-500 bg-cyan-500/10'
+                    : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  }`}
+              >
+                <div className="relative p-6 space-y-4">
+                  <div className="text-5xl mb-4">{item.icon}</div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
+                  {formData?.dietary === item.title && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute top-4 right-4"
+                    >
+                      <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                        ✓
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+          <AnimatePresence>
+            {formData?.dietary && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-center text-cyan-400 font-medium"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Dietary preference: {formData.dietary}
+                </motion.div>
+              </motion.div>
+            )}+
+          </AnimatePresence>
+        </motion.div>
+      )
+    },
+    {
+      id: 'accessibility',
+      title: "Accessibility requirements?",
+      icon: <FaWheelchair className="text-2xl" />,
+      component: (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 gap-6"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              }
+            }}
+            initial="hidden"
+            animate="show"
+          >
+            {SelectAccessibilityOptions.map((item) => {
+              const selected = (formData.accessibility || []).includes(item.title);
+              return (
+                <motion.div
+                  key={item.id}
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(6, 182, 212, 0.3)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const prev = formData.accessibility || [];
+                    handleInputChange(
+                      'accessibility',
+                      selected
+                        ? prev.filter((a) => a !== item.title)
+                        : [...prev, item.title]
+                    );
+                  }}
+                  className={`relative overflow-hidden rounded-2xl backdrop-blur-xl cursor-pointer
+                transition-all duration-300 border-2
+                ${selected
+                      ? 'border-cyan-500 bg-cyan-500/10'
+                      : 'border-white/10 bg-white/5 hover:bg-white/10'
+                    }`}
+                >
+                  <div className="relative p-6 space-y-4">
+                    <div className="text-5xl mb-4">{item.icon}</div>
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
+                    {selected && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-4 right-4"
+                      >
+                        <div className="bg-cyan-500 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                          ✓
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+          <AnimatePresence>
+            {formData.accessibility && formData.accessibility.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-center text-cyan-400 font-medium"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Accessibility needs: {formData.accessibility.join(', ')}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )
+    },
+    {
+      id: 'review',
+      title: "Review your preferences",
+      icon: <FaClipboardList className="text-2xl" />,
+      component: (
+        <ReviewStep
+          formData={formData}
+          Chatbot={Chatbot}
+          chatSession={chatSession}
+        />
       )
     }
   ];
@@ -914,87 +877,14 @@ function CreateTrip() {
       case 1: return formData?.noOfDays && formData?.noOfDays <= 30;
       case 2: return formData?.budget;
       case 3: return formData?.traveler;
+      case 4: return formData?.travelStyle;
+      case 5: return formData?.activities && formData.activities.length > 0;
+      case 6: return formData?.dietary !== undefined;
+      case 7: return formData?.accessibility !== undefined;
+      case 8: return true;
       default: return false;
     }
   };
-
-  // const SaveAiTrip = async (TripData) => {
-  //   let docId;
-  //   try {
-  //     setLoading(true);
-  //     const user = JSON.parse(localStorage.getItem('user'));
-
-  //     if (!user?.email) {
-  //       toast.error('Please sign in first');
-  //       return;
-  //     }
-
-  //     if (!formData || !TripData) {
-  //       toast.error('Missing trip data');
-  //       return;
-  //     }
-
-  //     docId = Date.now().toString();
-  //     const tripData = {
-  //       userSelection: formData,
-  //       tripData: JSON.parse(TripData),
-  //       userEmail: user.email,
-  //       id: docId,
-  //       createdAt: new Date().toISOString(),
-  //       userId: user.id || user.email
-  //     };
-
-  //     try {
-  //       await setDoc(doc(db, "AITrips", docId), tripData);
-  //       toast.success('Trip saved successfully!');
-  //     } catch (firestoreError) {
-  //       console.error('Firestore error:', firestoreError);
-  //       if (firestoreError.code === 'permission-denied') {
-  //         toast.error('Permission denied. Please check your authentication.');
-  //       } else {
-  //         toast.error('Failed to save to database');
-  //       }
-  //       return;
-  //     }
-  //   } catch (error) {
-  //     console.error('Error saving trip:', error);
-  //     toast.error(error.message || 'Failed to save trip');
-  //     return;
-  //   } finally {
-  //     setLoading(false);
-  //     if (docId) {
-  //       navigate('/view-trip/' + docId);
-  //     }
-  //   }
-  // };
-
-  // const OnGenerateTrip = async () => {
-  //   const user = localStorage.getItem('user');
-
-  //   if (!user) {
-  //     setOpenDialog(true);
-  //     return;
-  //   }
-
-  //   if (formData?.noOfDays > 5 && !formData?.location || !formData?.budget || !formData?.traveler) {
-  //     toast("Event has been created.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-  //   const FINAL_PROMPT = AI_PROMPT
-  //     .replace('{location}', formData?.location?.label)
-  //     .replace('{totalDays}', formData?.noOfDays)
-  //     .replace('{traveler}', formData?.traveler)
-  //     .replace('{budget}', formData?.budget)
-  //     .replace('{totalDays}', formData?.noOfDays);
-
-  //   const result = await chatSession.sendMessage(FINAL_PROMPT);
-
-  //   console.log("---", result?.response?.text());
-  //   setLoading(false);
-  //   SaveAiTrip(result?.response?.text());
-  // }
 
   const SaveAiTrip = async (tripDataString) => {
     let docId;
@@ -1033,51 +923,6 @@ function CreateTrip() {
     }
   };
 
-  // const OnGenerateTrip = async () => {
-  //   const user = localStorage.getItem('user');
-
-  //   if (!user) {
-  //     setOpenDialog(true);
-  //     return;
-  //   }
-
-  //   if (formData?.noOfDays > 5 && !formData?.location || !formData?.budget || !formData?.traveler) {
-  //     toast("Please fill all required fields");
-  //     return;
-  //   }
-
-  //   try {
-  //     setLoading(true);
-  //     const FINAL_PROMPT = AI_PROMPT
-  //       .replace('{location}', formData?.location?.label)
-  //       .replace('{totalDays}', formData?.noOfDays)
-  //       .replace('{traveler}', formData?.traveler)
-  //       .replace('{budget}', formData?.budget)
-  //       .replace('{totalDays}', formData?.noOfDays);
-
-  //     const result = await chatSession.sendMessage(FINAL_PROMPT);
-  //     const responseText = await result?.response?.text();
-
-  //     try {
-  //       const start = responseText.indexOf('{');
-  //       const end = responseText.lastIndexOf('}') + 1;
-  //       const jsonStr = responseText.slice(start, end);
-
-  //       const parsedJson = JSON.parse(jsonStr);
-
-  //       SaveAiTrip(JSON.stringify(parsedJson));
-  //     } catch (jsonError) {
-  //       console.error('JSON parsing error:', jsonError);
-  //       console.log('Raw response:', responseText);
-  //       toast.error('Invalid response format from AI. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error generating trip:', error);
-  //     toast.error('Failed to generate trip. Please try again.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const OnGenerateTrip = async () => {
     const user = localStorage.getItem('user');
 
@@ -1113,12 +958,16 @@ function CreateTrip() {
 
       const jsonStr = jsonMatch[0];
 
+      if (!jsonStr.trim().endsWith('}')) {
+        toast.error("AI response was incomplete. Please try again.");
+        return;
+      }
+
       try {
         const parsedJson = JSON.parse(jsonStr);
         SaveAiTrip(JSON.stringify(parsedJson));
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError);
-        console.log('Raw response:', responseText);
         toast.error('Invalid response format from AI. Please try again.');
       }
     } catch (error) {
@@ -1127,11 +976,11 @@ function CreateTrip() {
     } finally {
       setLoading(false);
     }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a1b] to-[#1a1a3a] text-white">
-      <div className="max-w-7xl mx-auto px-4 py-12 paddingTop">
+      <div className="mainWrapperContainer mx-auto px-4 py-12 paddingTop">
         {/* Progress Bar */}
         <div className="mb-16">
           <div className="flex justify-between mb-4">
@@ -1279,31 +1128,28 @@ function CreateTrip() {
             </div>
           </motion.div>
         </AnimatePresence>
-
-        {/* Login Dialog */}
         <Dialog open={openDialog}>
-          <DialogContent className="glassmorphism">
-            <VisuallyHidden>
-              <DialogTitle>Trip Details</DialogTitle>
-            </VisuallyHidden>
+          <DialogContent className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl">
             <DialogHeader>
               <DialogDescription>
-                <div className="text-center space-y-6">
-                  <img src="/logo.svg" alt="" className="mx-auto" />
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-bold text-white">Sign In Required</h3>
-                    <p className="text-gray-400">
-                      Please sign in with Google to generate your personalized trip
-                    </p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  <img src="/AI-TRIP-PLANNER/logo.svg" alt="" className="h-8 mx-auto" />
+                  <div className="space-y-2 text-center">
+                    <h3 className="text-xl font-bold text-white">Trip Details</h3>
+                    <p className="text-gray-400 text-sm"> Please sign in with Google to generate your personalized trip</p>
                   </div>
                   <Button
                     onClick={login}
-                    className="w-full glassmorphism-button-primary flex items-center justify-center gap-3"
+                    className="text-white w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00f3ff] rounded-full transition-all duration-300"
                   >
-                    <FcGoogle className="text-2xl" />
-                    Continue with Google
+                    <FcGoogle className="mr-2 h-5 w-5" />
+                    Sign in with Google
                   </Button>
-                </div>
+                </motion.div>
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

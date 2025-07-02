@@ -12,7 +12,7 @@ const TimelineItem = memo(({ day, index, isEven, smoothSpring }) => {
     >
       {/* Timeline Dot */}
       <motion.div
-        className={`absolute ${isEven ? '-left-[36px]' : '-right-[36px]'} w-6 h-6 rounded-full bg-[#00f3ff] top-1/2 -translate-y-1/2`} // Updated positioning
+        className={`absolute ${isEven ? '-left-[36px]' : '-right-[36px]'} w-6 h-6 rounded-full bg-[#00f3ff] top-1/2 -translate-y-1/2`} 
         initial={{ scale: 0 }}
         whileInView={{ scale: 1 }}
         whileHover={{ scale: 1.2 }}

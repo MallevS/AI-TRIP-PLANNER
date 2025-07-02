@@ -39,7 +39,6 @@ function Pricing() {
         "Email Support",
         "5 Trip Storage"
       ],
-    //   icon: <FiZap />,
       color: "#00f3ff"
     },
     {
@@ -53,7 +52,6 @@ function Pricing() {
         "50 Trip Storage",
         "Collaboration"
       ],
-    //   icon: <FiRocket />,
       color: "#7d4fff",
       featured: true
     },
@@ -68,7 +66,6 @@ function Pricing() {
         "Unlimited Storage",
         "24/7 Support"
       ],
-    //   icon: <FiDiamond />,
       color: "#ff66cc"
     }
   ];
